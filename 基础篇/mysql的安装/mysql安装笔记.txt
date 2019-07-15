@@ -1,0 +1,33 @@
+第一章：mysql的安装。
+1：mysql的官网 ---> www.mysql.com
+
+2: mysql按照用户群体区分主要分为【1：社区版 2：企业版】。
+
+3：在window平台下下载mysql：
+   3.1：在浏览器上输入 http://dev.mysql.com/downloads/mysql/5.0.html#linux
+   
+4：在linux平台下下载mysql:【这是其中一种方法---本人测试可行】 ---> 参考链接【https://www.jianshu.com/p/225e7c858027】
+    说明：CentOS7 一般yum安装包中有自带的mariadb。但是我们需要安装mysql,按照下面的步骤进行安装mysql。
+    4.1: 首先执行命令【rpm -qa|grep mariadb】查看是否有mariadb的安装包，没有可以无视，如果有的话，执行【rpm -e --nodeps mariadb-libs】删除它。。。
+    4.2：下载mysql5.7安装包【执行wget https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm（即你复制的下载链接）进行下载】
+    4.3：进行yum源安装执行【rpm -ivh mysql80-community-release-el7-1.noarch.rpm】命令
+    4.4：接下来可以通过【yum repolist all | grep mysql】查看yum源中的mysql安装包。
+    4.5：进行mysql安装
+        1：可以看到yum源中默认启用的安装包版本为MySQL8.0，如果需要切换为5.7，需要运行以下命令；
+		2：【yum-config-manager --disable mysql80-community】
+		3：【yum-config-manager --enable mysql57-community】
+		注意：yum-config-manager默认使用的是python2版本环境，如果用户使用这个命令时报错，可能是因为当前默认python版本为python3版本。需要在/bin/yum-config-manager文件中修改文件头#!/usr/bin/python -tt为#!/usr/bin/python2 -tt
+	4.6：接下来可以开始进行安装步骤，执行命令【yum install mysql-community-server】
+	4.7：执行命令【systemctl start mysqld.service】来启动mysql服务，【systemctl status mysqld.service】可查看mysql服务运行状态
+	4.8：将'root'@'localhost' 创建一个超级用户帐户。设置超级用户的密码并将其存储在错误日志文件中。要显示它，请使用以下命令：【grep 'temporary password' /var/log/mysqld.log】会有一个临时密码
+	4.9：通过使用生成的临时密码登录并为超级用户帐户设置自定义密码，尽快更改root密码【mysql -u root -p】
+	4.10：修改密码【ALTER USER 'root'@'localhost' IDENTIFIED BY '您的密码';】
+	
+	注：如果您需要修改简单密码，可以依次执行以下操作步骤:
+	    set global validate_password_policy=0;
+        set global validate_password_length=1;
+        set global validate_password_mixed_case_count=2;
+        -- 然后进行密码更改
+        ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+
+  
